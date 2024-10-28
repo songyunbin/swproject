@@ -1,0 +1,101 @@
+/* 기본 설정 */
+@font-face {
+    font-family: 'Freesentation-9Black';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2404@1.0/Freesentation-9Black.woff2') format('woff2');
+    font-weight: 900;
+    font-style: normal;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #ffffff;
+  padding: 20px;
+}
+
+.input-buyer{
+    width: 50%;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    font-size: 16px;
+}
+
+.input-seller{
+    width: 50%;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    font-size: 16px;
+}
+
+.input-section {
+  display: flex;
+  flex-direction:column;
+  width:48%;
+}
+
+.input-container {
+  display: flex;
+  justify-content:space-between;
+  gap : 20px;
+  margin: 20px 0;
+}
+
+label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.midpoint-btn {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  background-color: #39a23f;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.map-container {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  margin: 20px auto;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+#map {
+  width: 100%;
+  height: 500px;
+  /* 지도의 최소 높이를 설정하여 깨짐 방지 */
+  min-height: 500px;
+}
+
+.calculate-button {
+  background-color: #39a23f;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  margin: 20px auto;
+  display: block;
+  width: 200px;
+  text-align: center;
+}
+
+/* 추천 편의시설 리스트 */
+ul {
+  list-style-type: none;
+  margin: 20px 0;
+}
