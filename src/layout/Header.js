@@ -1,6 +1,6 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
-import styles from './Header.css'
+import './Header.css'
 
 export default function Header(){
     return(
@@ -26,7 +26,7 @@ export default function Header(){
                              </Link>
                        </li>
                        <li>
-                            <Link className = "header-nav-item" to='/boardwrite'>
+                            <Link className = "header-nav-item" to='/writeform'>
                                 글쓰기
                              </Link>
                        </li>
@@ -34,7 +34,7 @@ export default function Header(){
                 </nav>
 
 
-                <input type="text" class = "search-bar" placeholder="검색어를 입력하세요." />
+                <input type="text" className = "search-bar" placeholder="검색어를 입력하세요." />
                 <ul>
                     <li>
                         <Link className = "header-nav-item" to="/login">

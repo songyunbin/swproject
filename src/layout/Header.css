@@ -41,7 +41,7 @@
 /* 각 li 요소 간의 간격을 조정합니다. */
 .navigation li {
     text-align: center;
-    margin-right: 20px; /* 오른쪽 간격 조정 */
+    margin: 20px; /* 오른쪽 간격 조정 */
 }
 
 /* Link 요소에 대한 스타일 */
