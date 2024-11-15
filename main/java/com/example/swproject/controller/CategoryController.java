@@ -1,6 +1,7 @@
 package com.example.swproject.controller;
 
 import com.example.swproject.entity.Category;
+import com.example.swproject.entity.Product;
 import com.example.swproject.service.CategoryService;
 import com.example.swproject.service.RegistService;
 import org.springframework.beans.factory.annotation.Autowired;

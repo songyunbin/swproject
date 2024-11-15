@@ -1,10 +1,12 @@
 package com.example.swproject.controller;
 
 import com.example.swproject.entity.Category;
+import com.example.swproject.entity.Product;
 import com.example.swproject.entity.User;
 import com.example.swproject.service.CategoryService;
 import com.example.swproject.service.RegistService;
 import com.example.swproject.service.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,11 +15,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
-@CrossOrigin(origins = "http://localhost:3000")
+// RegistController 클래스에 @CrossOrigin 추가
+@CrossOrigin(origins = "http://localhost:3000")  // React 서버 주소
 @RestController
 @RequestMapping("/product")
 public class RegistController {
+
     @Autowired
     private CategoryService categoryService;
 
@@ -30,29 +36,32 @@ public class RegistController {
     @PostMapping("/regist")
     public Product registerProduct(
             @RequestParam("title") String title,
-            @RequestParam("category_id") Integer category_Id,
-            @RequestParam(value = "user_id", required = false) Integer userId,
+            @RequestParam("category_id") Integer categoryId,
+            @RequestParam(value = "kakao_id", required = false) Long kakaoId,
             @RequestParam("price") Integer price,
             @RequestParam("description") String description,
             @RequestParam(value = "image", required = false) MultipartFile image) { // 이미지 파일
 
         char status = '1'; // status는 항상 1:판매중
 
-        if (userId == null) {
-            userId = 1; // 기본 userId 설정
+        // kakaoId가 null인 경우에만 더미 사용자 생성
+        User user;
+
+        if (kakaoId != null) {
+            user = userService.getUserByKakaoId(kakaoId).get();
+        } else {
+            // 더미 사용자 생성
+            user = new User();
+            user.setKakaoId(0L);
+            user.setUserName("더미 사용자");
+            user.setLocation_x(0.0f);
+            user.setLocation_y(0.0f);
+            user.setCreated_at(Timestamp.valueOf(LocalDateTime.now()));
+            user = userService.save(user); // 사용자 저장
         }
 
-        Category category = categoryService.findById(category_Id)
+        Category category = categoryService.findById(categoryId)
                 .orElseGet(() -> categoryService.findById(1).orElse(null));
-
-        // 더미 사용자 생성 및 저장
-        User user = new User();
-        user.setUser_name("더미 사용자");
-        user.setLocation_x(0.0f);
-        user.setLocation_y(0.0f);
-        user.setCreated_at(Timestamp.valueOf(LocalDateTime.now()));
-
-        user = userService.save(user); // userService의 save 메서드 호출
 
         Product product = new Product();
         product.setTitle(title);
@@ -73,10 +82,11 @@ public class RegistController {
         return registService.save(product); // 저장
     }
 
+
     @PostMapping("/delete")
-    public ResponseEntity<Void> deleteProduct(@RequestParam Integer product_Id) {
+    public ResponseEntity<Void> deleteProduct(@RequestParam Integer productId) {
         try {
-            registService.delete(product_Id);
+            registService.delete(productId);
             return ResponseEntity.noContent().build(); // 성공 시 204 No Content 반환
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // 에러 시 500 반환
@@ -85,19 +95,18 @@ public class RegistController {
 
     @PostMapping("/modify")
     public ResponseEntity<Product> modifyProduct(
-            @RequestParam("product_id") Integer product_Id,
+            @RequestParam("product_id") Integer productId,
             @RequestParam("title") String title,
-            @RequestParam("category_id") Integer category_Id,
-            @RequestParam(value = "user_id", required = false) Integer userId,
+            @RequestParam("category_id") Integer categoryId,
+            @RequestParam(value = "kakao_id", required = false) Long kakaoId,
             @RequestParam("price") Integer price,
             @RequestParam("description") String description,
             @RequestParam("status") char status,
             @RequestParam(value = "image", required = false) MultipartFile image) {
 
         try {
-            Product product = registService.findById(product_Id)
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid product ID: " + product_Id));
-
+            Product product = registService.findById(productId)
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid product ID: " + productId));
 
             // 사용자 권한 확인
             //if (userId != null && !product.getUser().getUser_id().equals(userId)) {
@@ -112,7 +121,7 @@ public class RegistController {
             product.setStatus(status);
 
             // 카테고리 설정 (이 부분은 기존 로직 유지)
-            Category category = categoryService.findById(category_Id)
+            Category category = categoryService.findById(categoryId)
                     .orElseGet(() -> categoryService.findById(1).orElse(null));
             product.setCategory(category);
 
@@ -145,6 +154,10 @@ public class RegistController {
         return imagePath; // 저장된 이미지 경로 반환
     }
 
-
-
+    // 등록된 상품 목록 불러오기 ★(윤빈이꺼받아옴)
+    @Transactional
+    @GetMapping("/list")
+    public List<Product> getProductList() {
+        return registService.findAll(); // RegistService에서 모든 상품 목록을 가져옴
+    }
 }
